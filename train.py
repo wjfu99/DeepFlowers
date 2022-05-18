@@ -229,5 +229,5 @@ if __name__ == '__main__':
         model_path = path
 
     train = TrainModel(pretrained=True, model_path=model_path)
-    # train()
+    train()
     train.test(train.criterion)
