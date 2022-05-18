@@ -6,6 +6,7 @@ from torch import nn, optim
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
+from torch.utils.tensorboard import SummaryWriter
 
 from models import RNet
 from utils import imshow
@@ -89,7 +90,7 @@ class TrainModel(object):
 
         model_best_name = 'best_acc_{:.4f}_loss_{:.4f}_epo_{}'
         dataset_sizes = {x: len(self.image_datasets[x]) for x in ['train', 'val']}
-
+        tb = SummaryWriter()
         for epoch in range(num_epochs):
             print('Epoch {}/{}'.format(epoch, num_epochs - 1))
             print('-' * 10)
@@ -119,7 +120,6 @@ class TrainModel(object):
                         if phase == 'train':
                             loss.backward()
                             optimizer.step()
-
                     criterion_loss += loss.item() * inputs.size(0)
                     criterion_corrects += torch.sum(preds == labels.data)
 
@@ -128,7 +128,8 @@ class TrainModel(object):
 
                 if phase == 'train':
                     scheduler.step()  # epochs_loss
-
+                    tb.add_scalar("Loss", epochs_loss, epoch)
+                    tb.add_scalar("Accuracy", epochs_acc, epoch)
                 """
                 Acc： 准确率
                 """
@@ -141,13 +142,12 @@ class TrainModel(object):
                     model_best_acc = epochs_acc
                     _best_name = model_best_name.format(model_best_acc, epochs_loss, epoch)
                     self.save(self.net, self.model_save, _best_name)
-
             if epoch % 10 == 0:
                 self.save(
                     self.net, self.model_save,
                     'epoch_{}_acc_{:.8f}_loss_{:.8f}'.format(epoch, epochs_acc, epochs_loss)
                 )
-
+        tb.close()
         t = time.time() - t
         print('Train complete in {:.0f}m {:.0f}s'.format(t // 60, t % 60))
         print('Best val Acc: {:8f}'.format(model_best_acc))
