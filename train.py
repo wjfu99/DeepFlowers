@@ -6,6 +6,7 @@ from torch import nn, optim
 from torch.optim import lr_scheduler
 from torch.utils.data import DataLoader
 from torchvision import transforms, datasets
+from torch.utils.tensorboard import SummaryWriter
 
 from models import RNet
 from utils import imshow
