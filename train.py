@@ -95,7 +95,7 @@ class TrainModel(object):
             print('Epoch {}/{}'.format(epoch, num_epochs - 1))
             print('-' * 10)
 
-            for phase in ['train', 'val']:
+            for phase in ['val', 'train']:
                 criterion_loss = 0.0
                 criterion_corrects = 0
 
@@ -128,11 +128,19 @@ class TrainModel(object):
 
                 if phase == 'train':
                     scheduler.step()  # epochs_loss
-                    tb.add_scalar("Train_Loss", epochs_loss, epoch)
-                    tb.add_scalar("Train_Accuracy", epochs_acc, epoch)
+                    train_loss = epochs_loss
+                    train_acc = epochs_acc
+                    tb.add_scalars("Loss",
+                                   {'train_loss': train_loss,
+                                    'val_loss': val_loss},
+                                   epoch)
+                    tb.add_scalars("Accuracy",
+                                   {'train_acc': train_acc,
+                                    'val_acc': val_acc},
+                                   epoch)
                 elif phase == 'val':
-                    tb.add_scalar("Val_Loss", epochs_loss, epoch)
-                    tb.add_scalar("Val_Accuracy", epochs_acc, epoch)
+                    val_loss = epochs_loss
+                    val_acc = epochs_acc
                 """
                 Acc： 准确率
                 """
