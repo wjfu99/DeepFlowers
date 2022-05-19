@@ -128,8 +128,11 @@ class TrainModel(object):
 
                 if phase == 'train':
                     scheduler.step()  # epochs_loss
-                    tb.add_scalar("Loss", epochs_loss, epoch)
-                    tb.add_scalar("Accuracy", epochs_acc, epoch)
+                    tb.add_scalar("Train_Loss", epochs_loss, epoch)
+                    tb.add_scalar("Train_Accuracy", epochs_acc, epoch)
+                elif phase == 'val':
+                    tb.add_scalar("Val_Loss", epochs_loss, epoch)
+                    tb.add_scalar("Val_Accuracy", epochs_acc, epoch)
                 """
                 Acc： 准确率
                 """
