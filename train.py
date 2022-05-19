@@ -90,7 +90,7 @@ class TrainModel(object):
 
         model_best_name = 'best_acc_{:.4f}_loss_{:.4f}_epo_{}'
         dataset_sizes = {x: len(self.image_datasets[x]) for x in ['train', 'val']}
-        tb = SummaryWriter()
+        tb = SummaryWriter(log_dir="runs/lr_{:.0E}".format(optimizer.defaults['lr']))
         for epoch in range(num_epochs):
             print('Epoch {}/{}'.format(epoch, num_epochs - 1))
             print('-' * 10)
@@ -240,5 +240,5 @@ if __name__ == '__main__':
         model_path = path
 
     train = TrainModel(pretrained=True, model_path=model_path)
-    train()
+    train(num_epochs=200)
     train.test(train.criterion)
